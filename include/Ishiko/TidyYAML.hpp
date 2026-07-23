@@ -4,4 +4,6 @@
 #ifndef GUARD_ISHIKO_CPP_TIDYYAML_HPP
 #define GUARD_ISHIKO_CPP_TIDYYAML_HPP
 
+#include "TidyYAML/TidyYAMLPushParser.hpp"
+
 #endif
