@@ -1,0 +1,39 @@
+toolsets = gnu vs2022 vs2019 vs2017;
+
+gnu.makefile = ../gnumake/GNUmakefile;
+vs2022.solutionfile = ../vc17/ishiko_tidyyaml.sln;
+vs2019.solutionfile = ../vc16/ishiko_tidyyaml.sln;
+vs2017.solutionfile = ../vc15/ishiko_tidyyaml.sln;
+
+library ishiko_tidyyaml
+{
+    archs = x86 x86_64;
+
+    includedirs += ../../include/Ishiko/TidyYAML;
+
+    if ($(toolset) == gnu)
+    {
+        cxx-compiler-options = "-std=c++14";
+        outputdir = ../../lib;
+    }
+
+    if ($(toolset) != gnu)
+    {
+        cxx-compiler-options = "/utf-8";
+        outputdir = ../../lib/$(arch);
+    }
+
+    if ($(config) == Release)
+    {
+        basename = libishiko_tidyyaml;
+    }
+    if ($(config) == Debug)
+    {
+        basename = libishiko_tidyyaml-d;
+    }
+
+    headers
+    {
+        ../../include/Ishiko/TidyYAML.hpp
+    }
+}
