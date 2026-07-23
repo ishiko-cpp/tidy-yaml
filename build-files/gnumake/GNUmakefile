@@ -76,7 +76,7 @@ all: ../bakefile/../../lib/lib$(if $(call _equal,$(config),Debug),libishiko_tidy
 	$(RANLIB) $@
 
 $(_builddir)ishiko_tidyyaml_TidyYAMLPushParser.o: ../../src/TidyYAMLPushParser.cpp
-	$(CXX) -c -o $@ $(CPPFLAGS) $(CXXFLAGS) -MD -MP -fPIC -DPIC -pthread -I$(ISHIKO_CPP_YAML_CPP_ROOT)/include -I../../include/Ishiko/TidyYAML -std=c++14 ../../src/TidyYAMLPushParser.cpp
+	$(CXX) -c -o $@ $(CPPFLAGS) $(CXXFLAGS) -MD -MP -fPIC -DPIC -pthread -DYAML_CPP_STATIC_DEFINE -I$(ISHIKO_CPP_YAML_CPP_ROOT)/include -I../../include/Ishiko/TidyYAML -std=c++14 ../../src/TidyYAMLPushParser.cpp
 
 clean:
 	rm -f $(_builddir)*.o
