@@ -1,3 +1,6 @@
+ishikopath = envvar("ISHIKO_CPP_ROOT");
+import $(ishikopath)/third-party-glue/include/Ishiko/ThirdParty/yaml-cpp.bkl;
+
 toolsets = gnu vs2022 vs2019 vs2017;
 
 gnu.makefile = ../gnumake/GNUmakefile;
@@ -5,7 +8,7 @@ vs2022.solutionfile = ../vc17/ishiko_tidyyaml.sln;
 vs2019.solutionfile = ../vc16/ishiko_tidyyaml.sln;
 vs2017.solutionfile = ../vc15/ishiko_tidyyaml.sln;
 
-library ishiko_tidyyaml
+library ishiko_tidyyaml : yaml-cpp
 {
     archs = x86 x86_64;
 
@@ -35,5 +38,11 @@ library ishiko_tidyyaml
     headers
     {
         ../../include/Ishiko/TidyYAML.hpp
+        ../../include/Ishiko/TidyYAML/TidyYAMLPushParser.hpp
+    }
+
+    sources
+    {
+        ../../src/TidyYAMLPushParser.cpp
     }
 }
