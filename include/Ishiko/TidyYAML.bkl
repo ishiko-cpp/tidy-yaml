@@ -1,0 +1,23 @@
+ishikopath = envvar("ISHIKO_CPP_ROOT");
+import $(ishikopath)/third-party-glue/include/Ishiko/ThirdParty/yaml-cpp.bkl;
+
+setting ISHIKO_CPP_TIDYYAML_ROOT
+{
+    help = "Path to the Ishiko/C++ TidyYAML installation";
+    default = '$(ISHIKO_CPP_ROOT)/tidy-yaml';
+}
+
+template IshikoTidyYAML : yaml-cpp
+{
+    includedirs += $(ISHIKO_CPP_TIDYYAML_ROOT)/include;
+
+    if ($(toolset) == gnu)
+    {
+        libdirs += $(ISHIKO_CPP_TIDYYAML_ROOT)/lib;
+    }
+
+    if ($(toolset) != gnu)
+    {
+        libdirs += $(ISHIKO_CPP_TIDYYAML_ROOT)/lib/$(arch);
+    }
+}
