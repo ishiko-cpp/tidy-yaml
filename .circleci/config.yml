@@ -1,8 +1,8 @@
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
-      - image: ishiko/gcc-ishiko-cpp-build-prerequisites:0.8.0
+      - image: ishiko/gcc-ishiko-cpp-build-prerequisites:0.9.0
     steps:
       - run:
           name: "Set ISHIKO_CPP_ROOT environment variable and create workspace directory"

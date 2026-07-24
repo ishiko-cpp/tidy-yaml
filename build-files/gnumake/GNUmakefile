@@ -33,6 +33,11 @@ override CXXFLAGS += -O2
 else ifneq (,$(config))
 $(warning Unknown configuration "$(config)")
 endif
+#
+# Additionally, this makefile is customizable with the following
+# settings:
+#
+#      ISHIKO_CPP_YAML_CPP_ROOT  Path to the yaml-cpp installation
 
 # Use "make RANLIB=''" for platforms without ranlib.
 RANLIB ?= ranlib
@@ -45,13 +50,40 @@ _false :=
 _not    = $(if $(1),$(_false),$(_true_))
 _equal  = $(and $(findstring $(1),$(2)),$(findstring $(2),$(1)))
 
+
+# The directory for the build files, may be overridden on make command line.
+builddir = .
+
+ifneq ($(builddir),.)
+_builddir := $(if $(findstring $(abspath $(builddir)),$(builddir)),,../../)$(builddir)/../gnumake/
+_builddir_error := $(shell mkdir -p $(_builddir) 2>&1)
+$(if $(_builddir_error),$(error Failed to create build directory: $(_builddir_error)))
+endif
+
+# ------------
+# Configurable settings:
+# 
+
+# Path to the yaml-cpp installation
+ISHIKO_CPP_YAML_CPP_ROOT ?= $(YAML_CPP_ROOT)
+
+# ------------
+
 all: ../bakefile/../../lib/lib$(if $(call _equal,$(config),Debug),libishiko_tidyyaml-d,$(if $(call _equal,$(config),Release),libishiko_tidyyaml,ishiko_tidyyaml)).a
 
-../bakefile/../../lib/lib$(if $(call _equal,$(config),Debug),libishiko_tidyyaml-d,$(if $(call _equal,$(config),Release),libishiko_tidyyaml,ishiko_tidyyaml)).a:
-	$(AR) rc $@ 
+../bakefile/../../lib/lib$(if $(call _equal,$(config),Debug),libishiko_tidyyaml-d,$(if $(call _equal,$(config),Release),libishiko_tidyyaml,ishiko_tidyyaml)).a: $(_builddir)ishiko_tidyyaml_TidyYAMLPushParser.o
+	$(AR) rc $@ $(_builddir)ishiko_tidyyaml_TidyYAMLPushParser.o
 	$(RANLIB) $@
 
+$(_builddir)ishiko_tidyyaml_TidyYAMLPushParser.o: ../../src/TidyYAMLPushParser.cpp
+	$(CXX) -c -o $@ $(CPPFLAGS) $(CXXFLAGS) -MD -MP -fPIC -DPIC -pthread -DYAML_CPP_STATIC_DEFINE -I$(ISHIKO_CPP_YAML_CPP_ROOT)/include -I../../include/Ishiko/TidyYAML -std=c++14 ../../src/TidyYAMLPushParser.cpp
+
 clean:
+	rm -f $(_builddir)*.o
+	rm -f $(_builddir)*.d
 	rm -f ../bakefile/../../lib/lib$(if $(call _equal,$(config),Debug),libishiko_tidyyaml-d,$(if $(call _equal,$(config),Release),libishiko_tidyyaml,ishiko_tidyyaml)).a
 
 .PHONY: all clean
+
+# Dependencies tracking:
+-include $(_builddir)*.d
